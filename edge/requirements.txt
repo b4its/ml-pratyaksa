@@ -1,0 +1,5 @@
+numpy
+onnxruntime
+paho-mqtt
+pyserial
+scikit-learn   # hanya untuk scaler, bisa dihapus jika load manual

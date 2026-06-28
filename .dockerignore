@@ -1,0 +1,17 @@
+.env
+.git
+.gitignore
+env/
+__pycache__
+*.pyc
+mlflow.db
+*.db
+edge/
+bridge/
+mosquitto/
+data/
+notebooks/
+monitoring/
+README.md
+test_load.py
+mlruns/

@@ -1,0 +1,17 @@
+# monitoring/prometheus.yml
+global:
+  scrape_interval: 15s      # P2 FIX: Reduced from 5s to 15s to lower API overhead
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'pratyaksa_fastapi'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['api:6000']
+        labels:
+          environment: 'production'
+          service: 'inference_engine'
+
+  - job_name: 'prometheus_self'
+    static_configs:
+      - targets: ['localhost:9090']

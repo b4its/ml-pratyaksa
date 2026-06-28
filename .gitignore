@@ -1,0 +1,88 @@
+# ==============================================================================
+# 1. LINGKUNGAN VIRTUAL PYTHON & CACHE (WAJIB)
+# ==============================================================================
+env/
+venv/
+.env
+.env.local
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.cache/
+
+# ==============================================================================
+# 2. DATASET & TENSOR (SANGAT KRUSIAL)
+# ==============================================================================
+# GitHub membatasi file > 100MB dan tidak cocok untuk file biner
+data/*.parquet
+data/*.csv
+data/*.xlsx
+data/*.json
+data/*.zip
+data/*.gz
+artifacts/*.npy
+artifacts/*.npz
+
+# Pengecualian: Izinkan sampel data kecil untuk keperluan demo jika ada
+!data/sample_*.parquet 
+
+# ==============================================================================
+# 3. ARTEFAK MODEL (OPSIONAL/BERSYARAT)
+# ==============================================================================
+# Jika model sangat besar (> 50MB), abaikan. Gunakan Git LFS jika ingin di-push.
+artifact
+artifacts/*.keras
+artifacts/*.h5
+artifacts/*.pkl
+artifacts/*.joblib
+artifacts/*.parquet
+artifacts/*.onnx
+artifacts/_ckpt_*.keras
+
+# Pengecualian: Konfigurasi dan metadata model (kecil & aman di-push)
+!artifacts/artifact_deploy_meta.json
+!artifacts/artifact_split.json
+
+# ==============================================================================
+# 4. MLOPS & DOCKER VOLUMES
+# ==============================================================================
+mlflow.db
+mlruns/
+pgdata/
+redis_data/
+grafana_data/
+prometheus_data/
+data/daily/
+
+# ==============================================================================
+# 5. JUPYTER NOTEBOOK & AI TOOLS
+# ==============================================================================
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+.claude/
+
+# ==============================================================================
+# 6. LOGS & CACHE
+# ==============================================================================
+*.log
+/tmp/
+*.bak
+*.swp
+artifacts/audit_report.txt
+
+# ==============================================================================
+# 7. FILE SISTEM OPERASI & IDE
+# ==============================================================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+.devcontainer
+./devcontainer
+/.devcontainer

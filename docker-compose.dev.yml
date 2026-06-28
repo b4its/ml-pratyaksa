@@ -1,0 +1,14 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: docker-container/dev/Dockerfile
+    container_name: pratyaksa-dev
+    volumes:
+      - .:/workspace:cached
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8888:8888"
+    networks:
+      - pratyaksa-net
+    command: sleep infinity

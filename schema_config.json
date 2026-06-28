@@ -1,0 +1,21 @@
+{
+    "telemetri_mesin": [
+        "engine_rpm", "engine_load_pct", "coolant_temp_c", "coolant_pressure_kpa",
+        "engine_oil_temp_c", "engine_oil_pressure_kpa", "transmission_oil_temp_c",
+        "transmission_oil_pressure_kpa", "fuel_consumption_rate_lph",
+        "boost_pressure_kpa", "exhaust_gas_temp_c", "battery_voltage_v"
+    ],
+    "kondisi_fisik_fluida": [
+        "vibration_x_g", "vibration_y_g", "vibration_z_g", "acoustic_emission_db",
+        "hydraulic_main_pump_pressure_bar", "oil_viscosity_cst",
+        "oil_particle_count_iso", "oil_moisture_pct",
+        "wear_metal_fe_ppm", "wear_metal_cu_ppm"
+    ],
+    "konteks_lingkungan": [
+        "payload_tonnage", "cycle_time_minutes", "haul_distance_km", "road_grade_pct",
+        "ambient_temp_c", "humidity_pct", "dust_concentration_mgm3", "days_since_last_pm"
+    ],
+    "maintenance_logs": [
+        "last_maintenance_hours", "oil_change_flag"
+    ]
+}
