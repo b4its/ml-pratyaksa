@@ -1,4 +1,6 @@
 # test_load.py
+import os
+os.environ.setdefault("PRATYAKSA_API_KEYS", "test-key")
 from keras.saving import load_model
 # 1. Import kelas dari app.py agar Keras bisa membacanya
 from api.app import PRATYAKSAExpert 

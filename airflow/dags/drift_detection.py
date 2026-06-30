@@ -4,12 +4,17 @@ from airflow.operators.python import PythonOperator
 import pandas as pd
 import numpy as np
 import json
+from pathlib import Path
 from scipy.stats import ks_2samp
 
 def detect_drift():
     ref = pd.read_parquet("/opt/airflow/artifacts/split_train.parquet")
     yesterday = (datetime.now() - timedelta(1)).strftime("%Y-%m-%d")
-    curr = pd.read_parquet(f"/opt/airflow/data/daily/{yesterday}.parquet")
+    daily_path = Path(f"/opt/airflow/data/daily/{yesterday}.parquet")
+    if not daily_path.exists():
+        print(f"No daily data for {yesterday}, skipping drift detection")
+        return
+    curr = pd.read_parquet(daily_path)
     report = {}
     for col in ref.select_dtypes(include=[np.number]).columns:
         if col in curr.columns:

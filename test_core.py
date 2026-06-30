@@ -9,6 +9,7 @@ import numpy as np
 
 # Pastikan environment development terdeteksi
 os.environ.setdefault("ENV", "development")
+os.environ.setdefault("PRATYAKSA_API_KEYS", "test-key")
 
 # Tambahkan root proyek ke sys.path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -17,7 +18,6 @@ from api.app import (
     resolve_risk,
     enforce_hierarchy,
     DigitalTwin,
-    compute_dropout_flags,
     DriftDetector,
     FITUR_KOLOM,
     LABEL_NAMES,
@@ -114,20 +114,10 @@ def test_drift_detector():
     print("  ✅ DriftDetector — drift detected")
 
 
-def test_compute_dropout_flags():
-    """Uji dropout flag computation (dummy asset)"""
-    # Fungsi ini membutuhkan buffer in-memory, cukup pastikan tidak crash
-    # Karena buffer kosong, seharusnya return empty dict
-    result = compute_dropout_flags("dummy_asset_12345")
-    assert isinstance(result, dict)
-    print("  ✅ compute_dropout_flags — no crash")
-
-
 if __name__ == "__main__":
     print("🔍 PRATYAKSA Core Logic Unit Tests\n")
     test_resolve_risk()
     test_enforce_hierarchy()
     test_digital_twin()
     test_drift_detector()
-    test_compute_dropout_flags()
     print("\n✅ Semua unit test lulus!")

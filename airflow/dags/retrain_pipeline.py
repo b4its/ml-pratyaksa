@@ -18,7 +18,6 @@ from sklearn.model_selection import train_test_split
 # Airflow
 from airflow.decorators import dag, task
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-from airflow.providers.telegram.operators.telegram import TelegramOperator
 from airflow.providers.http.operators.http import SimpleHttpOperator
 
 # Keras 3
@@ -119,9 +118,11 @@ def pratyaksa_retraining_pipeline():
 
     @task
     def retrain_xgboost(data_path: str):
-        train_path = ARTIFACTS_DIR / "split_train.parquet"
+        train_path = Path(data_path) if data_path else ARTIFACTS_DIR / "split_train.parquet"
         if not train_path.exists():
-            raise FileNotFoundError("split_train.parquet tidak ditemukan")
+            train_path = ARTIFACTS_DIR / "split_train.parquet"
+        if not train_path.exists():
+            raise FileNotFoundError(f"Training data tidak ditemukan: {train_path}")
         df = pd.read_parquet(train_path)
         target_col = "label" if "label" in df.columns else "anomaly_class"
         X = df.drop(columns=[target_col])
@@ -138,9 +139,11 @@ def pratyaksa_retraining_pipeline():
             X_scaled = scaler.fit_transform(X)
 
         X_train, X_val, y_train, y_val = train_test_split(X_scaled, y, test_size=0.2)
+        num_classes = y.nunique()
         model = xgb.XGBClassifier(
             n_estimators=200, max_depth=6, learning_rate=0.05,
-            objective="multi:softprob" if y.nunique() > 2 else "binary:logistic",
+            objective="multi:softprob" if num_classes > 2 else "binary:logistic",
+            eval_metric="mlogloss" if num_classes > 2 else "logloss",
             early_stopping_rounds=10
         )
         model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False)
@@ -205,16 +208,6 @@ def pratyaksa_retraining_pipeline():
         log_response=True,
     )
 
-    notify_success = TelegramOperator(
-        task_id="notify_telegram",
-        telegram_conn_id="pratyaksa_telegram_bot",
-        chat_id=os.getenv("TELEGRAM_CHAT_ID"),
-        text="✅ <b>[MLOps] Retraining Complete</b>\n\n"
-            "Model Version: {{ ti.xcom_pull(task_ids='deploy_and_swap_metadata') }}\n"
-            "Status: Deployed to Production 🚜💻",
-        parse_mode="HTML",
-    )
-
-    version >> trigger_hot_reload >> notify_success
+    version >> trigger_hot_reload
 
 pipeline = pratyaksa_retraining_pipeline()

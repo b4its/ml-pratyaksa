@@ -36,6 +36,8 @@ services:
   postgres:
     image: timescale/timescaledb:latest-pg16
     container_name: pratyaksa-postgres
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_DB: pratyaksa
       POSTGRES_USER: pratyaksa
@@ -155,6 +157,7 @@ services:
       GF_UNIFIED_ALERTING_ENABLED: "true"
     volumes:
       - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana:/etc/grafana/provisioning:ro
     ports:
       - "6001:3000"
     networks:
@@ -205,6 +208,7 @@ services:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://postgres:${POSTGRES_PASSWORD}@postgres:5432/pratyaksa
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - PRATYAKSA_API_KEYS=${PRATYAKSA_API_KEYS}
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./artifacts:/opt/airflow/artifacts
@@ -234,6 +238,7 @@ services:
     environment:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://postgres:${POSTGRES_PASSWORD}@postgres:5432/pratyaksa
+      - PRATYAKSA_API_KEYS=${PRATYAKSA_API_KEYS}
     depends_on:
       airflow-scheduler: { condition: service_started }
     networks:
@@ -256,10 +261,16 @@ services:
     ports:
       - "6883:1883"   # MQTT
       - "6884:9001"   # WebSocket
+    environment:
+      MQTT_USER: ${MQTT_USER:-pratyaksa}
+      MQTT_PASS: ${MQTT_PASS:-pratyaksa_mqtt}
     volumes:
       - ./mosquitto/config:/mosquitto/config
       - ./mosquitto/data:/mosquitto/data
       - ./mosquitto/log:/mosquitto/log
+      - ./mosquitto/entrypoint.sh:/entrypoint.sh:ro
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
+    command: ["mosquitto", "-c", "/mosquitto/config/mosquitto.conf"]
     networks:
       - pratyaksa-net
     healthcheck:
@@ -279,9 +290,12 @@ services:
     build:
       context: .
       dockerfile: docker-container/bridge/Dockerfile
+    environment:
+      MQTT_USER: ${MQTT_USER:-pratyaksa}
+      MQTT_PASS: ${MQTT_PASS:-pratyaksa_mqtt}
     depends_on:
-      - mosquitto
-      - redis
+      mosquitto: { condition: service_started }
+      redis: { condition: service_healthy }
     networks:
       - pratyaksa-net
     restart: unless-stopped

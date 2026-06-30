@@ -83,6 +83,3 @@ Thumbs.db
 *.sublime-project
 *.sublime-workspace
 
-.devcontainer
-./devcontainer
-/.devcontainer

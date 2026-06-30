@@ -2,7 +2,7 @@
 # PRATYAKSA API — curl commands for Rust + Nuxt.js dashboard
 # Ganti IP jika berbeda
 URL="http://192.168.1.90:6000"
-KEY="dev-key-pratyaksa"
+KEY="YOUR_API_KEY"
 HEADER="X-API-Key: $KEY"
 
 echo "============================================"

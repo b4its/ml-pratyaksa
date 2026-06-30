@@ -70,6 +70,12 @@ CREATE TABLE IF NOT EXISTS sensor_readings (
     -- Maintenance logs
     last_maintenance_hours  REAL,
     oil_change_flag         SMALLINT DEFAULT 0,
+    -- Dropout flags (flatline detection)
+    oil_particle_count_iso_dropout_flag REAL DEFAULT 0,
+    payload_tonnage_dropout_flag REAL DEFAULT 0,
+    cycle_time_minutes_dropout_flag REAL DEFAULT 0,
+    haul_distance_km_dropout_flag REAL DEFAULT 0,
+    oil_change_flag_dropout_flag REAL DEFAULT 0,
     -- Quality flags
     connectivity_loss_flag  SMALLINT DEFAULT 0,
     raw_payload_hash        VARCHAR(64)   -- untuk deduplication

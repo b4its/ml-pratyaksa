@@ -23,5 +23,4 @@ RUN pip install --no-cache-dir \
     joblib==1.5.3 \
     pyarrow==24.0.0 \
     apache-airflow-providers-postgres==6.7.1 \
-    apache-airflow-providers-telegram==4.9.5 \
     apache-airflow-providers-http==6.0.3
